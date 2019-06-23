@@ -1,6 +1,5 @@
-# Computer-Vision
-This Repository focuses on Computer Vision using OpenCV
+# Algorithms & Programming
 
-programming language: C++
+This repository contains some implementations of Algorithms used in several different domains.
 
 Snippets folder contains small programs.
