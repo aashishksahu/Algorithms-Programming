@@ -3,7 +3,6 @@ from PIL import Image
 import os 
 
 
-
 class img_proc:
     # image processing toolkit 
     # this class reads and writes image to disk
@@ -48,10 +47,15 @@ class img_proc:
         with open(name, 'wb') as file:
             Image.fromarray(image).save(file, 'jpeg')
 
+
     def display(self, img):
         # displays the image
         if isinstance(img, np.ndarray):
             img = np.clip(img, 0.0, 255.0)
+        
+        if img.shape[2] == 1:
+            img = img.reshape(img.shape[0], img.shape[1])
+            
             img = Image.fromarray(np.uint8(img))
 
         img.show()
@@ -75,18 +79,61 @@ class img_proc:
         """
             rotates an image by 90 degrees
         """
+        
+        # check if the image is a numpy array or not
+        if not isinstance(img, np.ndarray):
+            # convert image to numpy array
+            img = np.asarray(img)
+
+        img = np.transpose(img, axes=[1,0,2])
+        print(img.shape)
+
+        return img
+
+
+    def mirror_v(self, img):
+        """
+            flips the image vertically
+        """
 
         # check if the image is a numpy array or not
         if not isinstance(img, np.ndarray):
             # convert image to numpy array
             img = np.asarray(img)
 
-        return np.transpose(img)
+        return np.flip(img, 0)
 
 
+    def mirror_h(self, img):
+        """
+            flips the image horizontally
+        """
 
-obj = img_proc()
-file = obj.load_img("/home/aashish/Pictures/101078.jpg")
+        # check if the image is a numpy array or not
+        if not isinstance(img, np.ndarray):
+            # convert image to numpy array
+            img = np.asarray(img)
 
-f = obj.rotate90(file)
-obj.display(f)
+        return np.flip(img, 1)
+
+    
+    def toGray (self, img):
+        """
+            converts an RGB image to Grayscale by taking a weighted average
+            of the form (0.21 R + 0.72 G + 0.07 B)/3.
+        """
+
+        # check if the image is a numpy array or not
+        if not isinstance(img, np.ndarray):
+            # convert image to numpy array
+            img = np.asarray(img)
+            
+        # extract RGB channels
+        r,g,b = np.split(img, 3, axis=2) 
+        
+        # take a weighted average of the three channels
+        img = (0.21*r + 0.72*g + 0.07*b)/3
+        
+        return img
+        
+
